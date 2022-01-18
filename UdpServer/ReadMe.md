@@ -1,13 +1,16 @@
-# 1 dll说明
-这个库是本项目的核心库，主要定义一些常用的函数；
+# 1 本节说明
+如何优雅的启动和停止线程
+
+
 
 # 2 引用库
-[PostgreSQL](https://www.postgresql.org/ftp/source/v14.1/)
 
-## 2.1 ubuntu安装编译环境套件
 ```bash
-sudo apt-get -y install build-essential libtool automake cmake unzip clang git wget
+vcpkg search gettext;
+vcpkg search pthread;
+vcpkg install gettext pthreads;
 ```
+
 
 # 3 编译命令
 ## 3.1 WINDOWS
@@ -18,14 +21,11 @@ cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=E:/vcpkg/scripts/buildsystems/vcpkg.c
 cmake --build build --config Release
 cmake --install build --config Release
 ```
-
 ## 3.2 LINUX
 ```bash
 mkdir build
 cd build
 rm -rf *
-sudo rm -rf /usr/local/kmblack
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr/local/kmblack ..
+cmake -DCMAKE_BUILD_TYPE=release -DKMBLACK_DIR=/usr/local/kmblack ..
 make
-sudo make install
 ```

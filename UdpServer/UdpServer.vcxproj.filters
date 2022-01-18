@@ -15,40 +15,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="main.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="base64.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="stringbuffer.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="vld.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="base64.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="instr_time.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="pg_bswap.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="stringbuffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="KcCore.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="KcUtility.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

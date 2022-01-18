@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dllKc", "dllKc\dllKc.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kmblack", "kmblack\kmblack.vcxproj", "{E4F1EF11-C4BF-43FD-AC98-FB588A85D70F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UdpServer", "UdpServer\UdpServer.vcxproj", "{DBB2BD9C-04A6-4956-984F-5B5601FFA43A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{E4F1EF11-C4BF-43FD-AC98-FB588A85D70F}.Release|x64.Build.0 = Release|x64
 		{E4F1EF11-C4BF-43FD-AC98-FB588A85D70F}.Release|x86.ActiveCfg = Release|Win32
 		{E4F1EF11-C4BF-43FD-AC98-FB588A85D70F}.Release|x86.Build.0 = Release|Win32
+		{DBB2BD9C-04A6-4956-984F-5B5601FFA43A}.Debug|x64.ActiveCfg = Debug|x64
+		{DBB2BD9C-04A6-4956-984F-5B5601FFA43A}.Debug|x64.Build.0 = Debug|x64
+		{DBB2BD9C-04A6-4956-984F-5B5601FFA43A}.Debug|x86.ActiveCfg = Debug|Win32
+		{DBB2BD9C-04A6-4956-984F-5B5601FFA43A}.Debug|x86.Build.0 = Debug|Win32
+		{DBB2BD9C-04A6-4956-984F-5B5601FFA43A}.Release|x64.ActiveCfg = Release|x64
+		{DBB2BD9C-04A6-4956-984F-5B5601FFA43A}.Release|x64.Build.0 = Release|x64
+		{DBB2BD9C-04A6-4956-984F-5B5601FFA43A}.Release|x86.ActiveCfg = Release|Win32
+		{DBB2BD9C-04A6-4956-984F-5B5601FFA43A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
