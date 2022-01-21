@@ -11,22 +11,45 @@ if (CMAKE_VERSION VERSION_LESS "3.7.0")
     set(CMAKE_INCLUDE_CURRENT_DIR ON)
 endif ()
 
-#判断操作系统环境
+#添加宏
 IF (UNIX)
-ELSE ()
+    SET(CURSES_NEED_NCURSES TRUE)
+    SET(define_lfs_macros TRUE)
+    IF (define_lfs_macros)
+        add_definitions(-D__USE_FILE_OFFSET64)
+        add_definitions(-D__USE_LARGEFILE64)
+        add_definitions(-D_LARGEFILE64_SOURCE)
+        add_definitions(-D_FILE_OFFSET_BITS=64)
+    ENDIF ()
 ENDIF ()
 
 
 #查找依赖的软件包
-
+IF (WIN32)
+    find_package(JANSSON CONFIG REQUIRED)
+    find_package(iconv REQUIRED)
+    find_package(Intl REQUIRED)
+    find_package(pthreads REQUIRED)
+ELSE ()
+    find_package(PkgConfig)
+    pkg_check_modules(OSSP-UUID REQUIRED ossp-uuid)
+    pkg_check_modules(JANSSON REQUIRED jansson)
+ENDIF ()
 
 #添加所有的源文件
 SET(SRC
         base64.c
+        KcCrc.c
+        KcDateTime.c
+        KcIpV4.c
+        KcJson.c
+        KcLibpq.c
+        KcLog.c
+        KcString.c
+        KcUdp.c
         stringbuffer.c
-        vld.c
+        KcVld.c
 )
-
 #生成动态链接库
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRC})
 
@@ -35,7 +58,34 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRC})
 #        ${SRC}
 #)
 
-#为target添加需要链接的共享库
+#添加导出宏UKCEXPORTS
+IF (WIN32)
+    TARGET_COMPILE_DEFINITIONS(${PROJECT_NAME}
+            PRIVATE
+            UKCEXPORTS
+            )
+ENDIF ()
+
+# 链接库文件
+IF (WIN32)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME}
+            jansson::jansson
+            ws2_32
+            ${TRE_LIB}
+            ${GETTIMEOFDAY_LIB}
+            ${Iconv_LIBRARIES}
+            ${Intl_LIBRARIES}
+            )
+ELSE ()
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME}
+            jansson
+            curses
+            -lpthread
+            -lm
+            ${Iconv_LIBRARIES}
+            ${Intl_LIBRARIES}
+            )
+ENDIF ()
 
 
 
@@ -47,6 +97,10 @@ SET(KMBLACK_PUBLIC_HEADERS
         base64.h
         instr_time.h
         KcCore.h
+        KcIpV4.h
+        KcLibpq.h
+        KcShared.h
+        KcStdio.h
         KcUtility.h
         pg_bswap.h
         stringbuffer.h

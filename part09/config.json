@@ -1,0 +1,11 @@
+﻿{
+  "listen_addresses": "192.168.1.167",
+  "port": 55431,
+  "send_timeout": 3,
+  "recv_timeout": 3,
+  "queue_max": 1,
+  "thread_pool": 1,
+
+
+  "log_path": "D:\\MyWork\\202109\\udpserver\\log" 
+}

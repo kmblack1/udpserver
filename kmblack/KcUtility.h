@@ -1,8 +1,10 @@
 ﻿/*****************************************************************************
-*    昆明畅博科技公司 Copyright (c) 2014-2022
-*	 作者：黑哥，2022-01-14
-* 
-*    常用工具
+*	昆明畅博科技公司 Copyright (c) 2014-2022
+*	Copyright (c) 2014-2022, Kunming Changbo Technology Co., Ltd.
+*	www.kuncb.cn
+*	作者：黑哥
+*
+*	编码标准宏定义
 *****************************************************************************/
 
 #ifndef KC_043055AA_F295_42FC_BE3A_D4B24B4AAE54
@@ -44,7 +46,7 @@
 *	UDP读写时的缓冲区大小
 *	Internet上的标准MTU值为576字节,UDP的数据缓冲区大小控控制在548字节(576-8-20),20字节的IP首部IP协议格式)和8字节的UDP(UDP协议格式)首部.
 *****************************************************************************/
-#define KC_UDP_BUFFER_SZIE  (548)
+#define KC_UDP_BUFFER_SIZE  (548)
 
 /*****************************************************************************
 *	文件或目录最大长度
@@ -67,16 +69,21 @@ static const char UTF8BOM[4] = { (char)0xEF ,(char)0xBB ,(char)0xBF,(char)0x00 }
 #define KC_2STR(x) #x
 
 /*****************************************************************************
+*	生成指定范围的随机数
+*****************************************************************************/
+#define RANGE_RANDOM(lmin, lmax)(rand() % (lmax + 1 - lmin) + lmin)
+
+/*****************************************************************************
 *	浮点与整型转换		注意只能用指针转换
 *****************************************************************************/
-#define KC_float2int(x) (*((int32_t*)(&x)))
-#define KC_int2float(x) (*((float *)((int32_t *)(&x))))
-#define KC_float2uint(x) (*((uint32_t*)(&x)))
-#define KC_uint2float(x) (*((float *)((uint32_t *)(&x))))
-#define KC_double2int64(x) (*((int64_t*)(&x)))
-#define KC_int642double(x) (*((double *)((int64_t *)(&x))))
-#define KC_double2uint64(x) (*((uint64_t*)(&x)))
-#define KC_uint642double(x) (*((double *)((uint64_t *)(&x))))
+#define KC_FLOAT_TO_INT32(x) (*((int32_t*)(&x)))
+#define KC_INT32_TO_FLOAT(x) (*((float *)((int32_t *)(&x))))
+#define KC_FLOAT_TO_UINT32(x) (*((uint32_t*)(&x)))
+#define KC_UINT32_TO_FLOAT(x) (*((float *)((uint32_t *)(&x))))
+#define KC_DOUBLE_TO_INT64(x) (*((int64_t*)(&x)))
+#define KC_INT64_TO_DOUBLE(x) (*((double *)((int64_t *)(&x))))
+#define KC_DOUBLE_TO_UINT64(x) (*((uint64_t*)(&x)))
+#define KC_UINT64_TO_DOUBLE(x) (*((double *)((uint64_t *)(&x))))
 
 /*****************************************************************************
 *	struct timeval转换为整数毫秒
@@ -252,7 +259,16 @@ typedef int SOCKET;
 		goto KC_ERROR_CLEAR;\
 }while (0)
 
-
+/*****************************************************************************
+*   设置的内容超过缓冲区大小
+*****************************************************************************/
+#define KC_SET_BUFFER_EXCEED(pBufBegin,pBufEnd,bufSize,str) do{\
+		if(((pBufEnd)-(pBufBegin)) > bufSize) { \
+			resetStringBuffer((str));\
+			appendStringBuffer((str), gettext("the contents of the setting exceed the buffer size.(%s:%d)"), __FILE__, __LINE__); \
+			goto KC_ERROR_CLEAR;\
+		} \
+}while (0)
 /*****************************************************************************
 *   JSON操作宏
 *****************************************************************************/
@@ -326,23 +342,16 @@ typedef int SOCKET;
 /*****************************************************************************
 *   FILE操作宏
 *****************************************************************************/
-//读取文件检查文件是否存在和权限
-#define KC_FILE_READ_ACCESS_CHECK(fullfile,str) do {	\
-	if (0 != KC_ACCESS((fullfile), 0)) {	\
-		resetStringBuffer((str));				\
-		appendStringBuffer((str), gettext("file \"%s\" not found.\n"), (fullfile));	\
-		goto KC_ERROR_CLEAR;	\
-	}	\
-	if (0 != KC_ACCESS((fullfile), 4)) {	\
-		resetStringBuffer((str));	\
-		appendStringBuffer((str), gettext("file \"%s\" access denied.\n"), (fullfile));	\
-		goto KC_ERROR_CLEAR;\
-	}	\
-}  while (0)
-
-//写入文件检查文件是否有写入权限
-#define KC_FILE_WRITE_ACCESS_CHECK(fullfile,str) do {	\
-	if (0 != KC_ACCESS((fullfile), 2)) {	\
+//检查文件或目录是否有指定的权限
+#define KC_FILE_ACCESS_CHECK(fullfile,flag,isexists,str) do {	\
+	if((isexists)){ \
+		if (0 != KC_ACCESS((fullfile), 0)) { \
+				resetStringBuffer((str));				\
+				appendStringBuffer((str), gettext("file \"%s\" not found.\n"), (fullfile));	\
+				goto KC_ERROR_CLEAR;	\
+		}	\
+	} \
+	if (0 != KC_ACCESS((fullfile), (flag))) {	\
 		resetStringBuffer((str));	\
 		appendStringBuffer((str), gettext("file \"%s\" access denied.\n"), (fullfile));	\
 		goto KC_ERROR_CLEAR;\
@@ -408,48 +417,11 @@ ENFILE:系统中打开的文件过多。
 /*****************************************************************************
 *    copy string (truncating the result)
 *****************************************************************************/
-#if _MSC_VER >= 1400
-# define KC_strcpy(buf, len, src) (void)strncpy_s((buf), (len), (src), _TRUNCATE)
-#elif defined(HAVE_STRLCPY)
-# define KC_strcpy(buf, len, src) (void)strlcpy((buf), (src), (len))
-#else
-# define KC_strcpy(buf, len, src) (void)((buf) == NULL || (len) <= 0 || (strncpy((buf), (src), (len) - 1), (buf)[(len) - 1] = '\0') || 1)
-#endif
-
-/* copy string up to n chars (sets string to empty on overrun and returns nonzero, zero if OK) */
-#if _MSC_VER >= 1400
-# define KC_strncpy(buf, len, src, num) ((buf) == NULL || ((size_t)(len) > (size_t)(num) ? strncpy_s((buf), (len), (src), (num)) : ((buf)[0] = '\0', 1)))
-#else
-# define KC_strncpy(buf, len, src, num) ((buf) == NULL || ((size_t)(len) > (size_t)(num) ? (strncpy((buf), (src), (num)), (buf)[(size_t)(num)] = '\0') : ((buf)[0] = '\0', 1)))
-#endif
-
-/* concat string up to n chars (truncates on overrun and returns nonzero, zero if OK) */
-#if _MSC_VER >= 1400
-# define KC_strncat(buf, len, src, num) ((buf) == NULL || ((size_t)(len) > strlen((buf)) + (size_t)(num) ? strncat_s((buf), (len), (src), (num)) : 1))
-#else
-# define KC_strncat(buf, len, src, num) ((buf) == NULL || ((size_t)(len) > strlen((buf)) + (size_t)(num) ? (strncat((buf), (src), (num)), (buf)[(size_t)(len) - 1] = '\0') : 1))
-#endif
-
 /* copy memory (returns ERANGE on overrun, zero if OK) */
 #if _MSC_VER >= 1400
-# define KC_memcpy(buf, len, src, num) ((buf) && (size_t)(len) >= (size_t)(num) ? memcpy_s((buf), (len), (src), (num)) : ERANGE)
+# define KC_MEMCPY(buf, len, src, num) ((buf) && (size_t)(len) >= (size_t)(num) ? memcpy_s((buf), (len), (src), (num)) : ERANGE)
 #else
-# define KC_memcpy(buf, len, src, num) ((buf) && (size_t)(len) >= (size_t)(num) ? !memcpy((buf), (src), (num)) : ERANGE)
-#endif
-
-/* move memory (returns ERANGE on overrun, zero if OK) */
-#if _MSC_VER >= 1400
-# define KC_memmove(buf, len, src, num) ((buf) && (size_t)(len) >= (size_t)(num) ? memmove_s((buf), (len), (src), (num)) : ERANGE)
-#else
-# define KC_memmove(buf, len, src, num) ((buf) && (size_t)(len) >= (size_t)(num) ? !memmove((buf), (src), (num)) : ERANGE)
-#endif
-
-
-#if _MSC_VER >= 1400
-#	define KC_snprintf(buf, len,format, ...) _snprintf_s((buf), (len), _TRUNCATE,(format),##__VA_ARGS__)
-
-#else
-#	define KC_snprintf(buf, len, format, ...) snprintf((buf), (len), _TRUNCATE,(format),##__VA_ARGS__)
+# define KC_MEMCPY(buf, len, src, num) ((buf) && (size_t)(len) >= (size_t)(num) ? !memcpy((buf), (src), (num)) : ERANGE)
 #endif
 
 

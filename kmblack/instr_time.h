@@ -55,7 +55,7 @@
 #ifndef INSTR_TIME_H
 #define INSTR_TIME_H
 
-#ifndef WIN32
+#ifndef _WIN32
 
 #ifdef HAVE_CLOCK_GETTIME
 

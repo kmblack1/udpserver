@@ -1,0 +1,7 @@
+﻿[
+  {
+    "identifier": "0x0551",
+    "library": "plugins/HuiNong.dll",
+    "entry_process_data": "kcHnPluginProcessData"
+  }
+]

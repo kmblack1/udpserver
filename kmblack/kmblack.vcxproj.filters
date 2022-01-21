@@ -27,7 +27,28 @@
     <ClCompile Include="stringbuffer.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="vld.c">
+    <ClCompile Include="KcVld.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcString.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcDateTime.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcIpV4.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcJson.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcLog.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcCrc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcUdp.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,6 +69,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="KcUtility.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="KcShared.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="KcStdio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="KcIpV4.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

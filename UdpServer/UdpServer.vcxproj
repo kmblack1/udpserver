@@ -123,7 +123,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\MyWork\2022\01\x64\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kmblack.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kmblack.lib;ws2_32.lib;DbgHelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,17 +143,35 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\MyWork\2022\01\x64\Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kmblack.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kmblack.lib;ws2_32.lib;DbgHelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="argparse.c" />
+    <ClCompile Include="KcConfig.c" />
+    <ClCompile Include="KcPlugins.c" />
+    <ClCompile Include="KcUdpBackedThreads.c" />
+    <ClCompile Include="KcUdpBackedThreadsHead.c" />
+    <ClCompile Include="KcUnix.c" />
+    <ClCompile Include="KcWin32.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="config.json" />
+    <None Include="plugins.json" />
     <None Include="ReadMe.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="argparse.h" />
+    <ClInclude Include="KcConfig.h" />
+    <ClInclude Include="KcPlugins.h" />
+    <ClInclude Include="KcUdpBackedThreads.h" />
+    <ClInclude Include="KcUdpBackedThreadsHead.h" />
+    <ClInclude Include="KcUnix.h" />
+    <ClInclude Include="KcWin32.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

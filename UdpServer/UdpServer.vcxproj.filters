@@ -13,10 +13,34 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="threads">
+      <UniqueIdentifier>{e340952d-00f2-4710-96b9-fc67ac5d2f44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcConfig.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcPlugins.c">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="KcUnix.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcWin32.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="argparse.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="KcUdpBackedThreads.c">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="KcUdpBackedThreadsHead.c">
+      <Filter>threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -24,5 +48,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.md" />
+    <None Include="config.json" />
+    <None Include="plugins.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="KcConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="KcPlugins.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="KcUnix.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="KcWin32.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="argparse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="KcUdpBackedThreads.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="KcUdpBackedThreadsHead.h">
+      <Filter>threads</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
