@@ -183,9 +183,9 @@ int main(int argc, char* argv[]) {
 	KC_CHECK_RCV2(test1(str));
 	fprintf(stdout, "\n", str->data);
 	KC_CHECK_RCV2(test2(str));
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_SUCCESS;
 KC_ERROR_CLEAR:
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_FAILURE;
 }

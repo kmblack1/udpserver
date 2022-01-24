@@ -141,12 +141,6 @@ typedef int SOCKET;
 	}\
 } while (0)
 
-#define KC_STRINGBUF_FREE(ptr) do {\
-	if (NULL != (ptr)  ) {\
-		destroyStringBuffer((ptr)); (ptr)  = NULL;\
-	}\
-} while (0);
-
 #define KC_JSON_FREE(ptr) do {\
 	if (NULL != (ptr)  ) {\
 		json_decref((ptr)); (ptr)  = NULL;\

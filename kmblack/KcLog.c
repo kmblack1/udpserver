@@ -25,7 +25,7 @@ void kcSaveLog(const char* const logPath, const StringBuffer context, const char
 #ifdef _WIN32
 	localtime_s(ptr, &now);   //获取当地日期和时间
 #else
-	ptr = localtime(&now);
+	localtime_r(&now, ptr);
 #endif
 	if (NULL == fileName) {
 		appendStringBuffer(str, "%s/%04d%02d%02d.log", logPath, 1900 + t.tm_year, 1 + t.tm_mon, t.tm_mday);
@@ -62,11 +62,11 @@ void kcSaveLog(const char* const logPath, const StringBuffer context, const char
 	fflush(stream);
 	KC_SAFE_FREE(fullfile);
 	KC_FILE_CLOSE(stream);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return;
 KC_ERROR_CLEAR:
 	KC_SAFE_FREE(fullfile);
 	KC_FILE_CLOSE(stream);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return;
 }

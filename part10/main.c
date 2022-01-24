@@ -49,6 +49,6 @@ int32_t main(int32_t argc, char* argv[]) {
 
 	pthread_cond_destroy(&cond);
 	pthread_mutex_destroy(&mutex);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_SUCCESS;
 }

@@ -111,13 +111,13 @@ int main(int argc, char* argv[]) {
 
 	KC_SAFE_STOP_THREADS(shared, threads);
 	KC_SAFE_FREE_SHARED(shared);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_SUCCESS;
 KC_ERROR_CLEAR:
 	KC_SAFE_STOP_THREADS(shared, threads);
 	KC_SAFE_FREE_SHARED(shared);
 	fprintf(stderr, "%s\n", str->data);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_FAILURE;
 }
 
@@ -207,13 +207,13 @@ void kcThreadVoid(void* obj) {
 			pthread_mutex_unlock(shared->mutex);
 		}
 	}
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return;
 KC_ERROR_CLEAR:
 	pthread_mutex_lock(shared->mutex);
 	shared->isRuning = 0;
 	pthread_mutex_unlock(shared->mutex);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return;
 }
 void kcFreeThreads(pthread_t** threads, uint8_t threadPool) {

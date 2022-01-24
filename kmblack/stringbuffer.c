@@ -367,7 +367,7 @@ appendStringBufferVA(StringBuffer str, const char *fmt, va_list args)
 void
 appendStringBufferStr(StringBuffer str, const char *data)
 {
-	appendBinaryStringBuffer(str, data, strlen(data));
+	appendStringBufferBinary(str, data, strlen(data));
 }
 
 /*
@@ -395,7 +395,7 @@ appendStringBufferChar(StringBuffer str, char ch)
  * if necessary.
  */
 void
-appendBinaryStringBuffer(StringBuffer str, const char *data, size_t datalen)
+appendStringBufferBinary(StringBuffer str, const char *data, size_t datalen)
 {
 	/* Make more room if needed */
 	if (!enlargeStringBuffer(str, datalen))

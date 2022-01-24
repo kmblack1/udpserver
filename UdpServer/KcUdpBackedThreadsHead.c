@@ -267,7 +267,7 @@ void kcQueueFree(const struct KC_CONFIG* const config, struct KC_BACKEND_ITEM** 
 	for (uint16_t i = 0; i < config->queue_max; ++i, ++backendItem) {
 		if (NULL != backendItem) {
 			KC_SOCKET_CLOSE(backendItem->sockRaw);
-			KC_STRINGBUF_FREE(backendItem->recv);
+			KC_SAFE_STRINGBUF_FREE(backendItem->recv);
 		}
 	}
 	free(items);

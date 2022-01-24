@@ -79,7 +79,7 @@ int32_t kcStringReplace(const char* source, const char* substr, const char* dest
 
 	resetStringBuffer(error);
 	while ((position = strstr(ptmp, substr))) {
-		appendBinaryStringBuffer(error, ptmp, (position - ptmp));
+		appendStringBufferBinary(error, ptmp, (position - ptmp));
 		appendStringBufferStr(error, dest);
 		ptmp = (position + substrLen);
 	}

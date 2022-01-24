@@ -137,6 +137,26 @@ typedef StringBufferData* StringBuffer;
    */
 #define INITIAL_EXPBUFFER_SIZE	256
 
+   /*****************************************************************************
+   *	安全释放StringBuffer
+   *****************************************************************************/
+#define KC_SAFE_STRINGBUF_FREE(ptr) do {\
+	if (NULL != (ptr)  ) {\
+		destroyStringBuffer((ptr)); (ptr)  = NULL;\
+	}\
+} while (0)
+
+   /*****************************************************************************
+   *	安全调整StringBuffer容量
+   *****************************************************************************/
+#define KC_SAFE_ENLARGE_STRINGBUFFER(str,newsize,err) do {\
+	if (!enlargeStringBuffer((str),(newsize))) {\
+		resetStringBuffer((err)); \
+		appendStringBufferStr((err), gettext("out of memory.")); \
+		goto KC_ERROR_CLEAR; \
+	}\
+} while (0)
+
 #ifdef __cplusplus
 extern "C" {
 #endif	/*__cplusplus 1*/
@@ -242,7 +262,7 @@ extern "C" {
 	 * Append arbitrary binary data to a StringBuffer, allocating more space
 	 * if necessary.
 	 */
-	extern KC_EXTERNAL void KCAPI appendBinaryStringBuffer(StringBuffer str,
+	extern KC_EXTERNAL void KCAPI appendStringBufferBinary(StringBuffer str,
 		const char* data, size_t datalen);
 
 #ifdef __cplusplus

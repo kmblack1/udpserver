@@ -129,7 +129,7 @@ int32_t main(int32_t argc, char* argv[]) {
 	WSACleanup();
 #endif
 	KC_SAFE_MODULE_FREE(stdPath);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_SUCCESS;
 KC_ERROR_CLEAR:
 #ifdef WIN32
@@ -138,7 +138,7 @@ KC_ERROR_CLEAR:
 #endif
 	KC_SAFE_MODULE_FREE(stdPath);
 	fprintf(stderr, "%s\n", str->data);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_FAILURE;
 }
 

@@ -101,12 +101,12 @@ void kcUdpBackendThreadRecv(void* obj) {
 		}
 	}
 	KC_SOCKET_CLOSE(sock);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return;
 KC_ERROR_CLEAR:
 	KC_SOCKET_CLOSE(sock);
 	kcSaveLog(shared->config->log_path, str, NULL);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 
 	pthread_mutex_lock(shared->mutex);
 	shared->isRuning = 0;
@@ -194,12 +194,12 @@ void kcUdpBackendThreadWorks(void* obj) {
 		}
 	}
 	//KCPQ_CLOSE(conn);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return;
 KC_ERROR_CLEAR:
 	//KCPQ_CLOSE(conn);
 	kcSaveLog(shared->config->log_path, str, NULL);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 
 	pthread_mutex_lock(shared->mutex);
 	shared->isRuning = 0;

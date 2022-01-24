@@ -77,7 +77,11 @@ int32_t kcLoadConfig(const char* const fullfile, struct KC_CONFIG* conf, StringB
 			}
 		}
 		// 确保我们至少可以读取256字节,enlargeStringBuffer重新调整内存大小为 error->len*2，所以在这之前必须要检查error->len == MaxAllocSize - 1
-		enlargeStringBuffer(error, 256);
+		if (!enlargeStringBuffer(error, 256)) {
+			resetStringBuffer(error);
+			appendStringBufferStr(error, gettext("out of memory."));
+			goto KC_ERROR_CLEAR;
+		}
 		rbytes = fread(error->data + error->len, 1, (size_t)(error->maxlen - error->len - 1), stream);
 		error->len += rbytes;
 		nbytes += rbytes;

@@ -31,11 +31,11 @@ int main(int argc, char* argv[]) {
 
 	KC_SAFE_FREE(data);
 	KC_SAFE_MODULE_FREE(buffer);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_SUCCESS;
 KC_ERROR_CLEAR:
 	KC_SAFE_FREE(data);
 	KC_SAFE_MODULE_FREE(buffer);
-	KC_STRINGBUF_FREE(str);
+	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_FAILURE;
 }
