@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <libintl.h>
 #include <pthread.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #	ifdef _DEBUG
 #		include <vld.h>
 #	endif

@@ -9,66 +9,7 @@
 #include <KcUtility.h>
 #include  <KcStdio.h>
 #include <KcShared.h>
-
-#define KC_SAFE_SQLITE3_CLOSE(ptr) do {\
-	if(NULL !=(ptr)  ) { \
-		sqlite3_close_v2((ptr)); (ptr) = NULL; \
-	} \
-} while (0)
-
-#define KC_SAFE_SQLITE3_STMT_DESTROY(ptr) do {\
-	if(NULL !=(ptr)  ) { \
-		sqlite3_finalize((ptr)); (ptr) = NULL; \
-	} \
-} while (0)
-
-#define KC_SAFE_SQLITE3_FREE(ptr) do {\
-	if(NULL !=(ptr)  ) { \
-		sqlite3_free((ptr)); (ptr) = NULL; \
-	} \
-} while (0)
-
-/*****************************************************************************
-*   检查SQLITE3函数是否成功
-*****************************************************************************/
-#define KC_CHECK_SQLITE3(rc,funname,str) do{\
-	if (SQLITE_OK  != (rc) ){\
-		resetStringBuffer((str));\
-		appendStringBuffer((str),gettext("function \"%s\" fail.\n\"%s\".\nfile:%s(%d)"),(funname),sqlite3_errstr(rc),__FILE__,__LINE__);\
-		goto KC_ERROR_CLEAR;\
-	}\
-}while (0)
-
-/*****************************************************************************
-*   检查sqlite3_exec函数是否执行成功
-*****************************************************************************/
-#define KC_CHECK_SQLITE3_EXEC(rc,errMessag,str) do{\
-	if (SQLITE_OK  != (rc)){\
-		resetStringBuffer((str));\
-		appendStringBuffer((str),gettext("function \"%s\" fail.\n\"%s\".\nfile:%s(%d)"),("sqlite3_exec"),errMessag,__FILE__,__LINE__);\
-		goto KC_ERROR_CLEAR;\
-	}\
-}while (0)
-
-/*****************************************************************************
-*   检查sqlite3_step函数是否执行成功
-*****************************************************************************/
-#define KC_CHECK_SQLITE3_STEP_FAIL(rc,str) do{\
-	resetStringBuffer((str));\
-	appendStringBuffer((str),gettext("function \"%s\" fail.\n\"%s\".\nfile:%s(%d)"),("sqlite3_step"),sqlite3_errstr(rc),__FILE__,__LINE__);\
-	goto KC_ERROR_CLEAR;\
-}while (0)
-
-/*****************************************************************************
-*   检查sqlite3_exec函数是否执行成功
-*****************************************************************************/
-#define KC_SAFE_STRING_ARRAY_FREE(ptr,count) do {\
-	if(NULL!=(ptr)) { \
-		kcSafeStringArrayFree((ptr),(count)); \
-		(ptr)=NULL; \
-	} \
-} while (0)
-
+#include <KcSqlite3.h>
 /*****************************************************************************
 *	在栈上创建的字符串数组，无需释放
 *****************************************************************************/
@@ -82,13 +23,13 @@ int32_t getTimeZone() {
 	struct tm gmt, local, * pgtm = &gmt, * plocal = &local;
 
 	time(&t);		//获取系统日期和时间
-#ifdef _WIN32				//获取当地日期和时间
+#ifdef _MSC_VER				//获取当地日期和时间
 	localtime_s(plocal, &t);
 #else
 	localtime_r(&t, plocal);
 #endif
 
-#ifdef _WIN32				//把日期和时间转换为格林威治(GMT)时间
+#ifdef _MSC_VER				//把日期和时间转换为格林威治(GMT)时间
 	gmtime_s(pgtm, &t);
 #else
 	gmtime_r(&t, pgtm);
@@ -120,11 +61,11 @@ int32_t kcGenerateFiveFifty(sqlite3* db, StringBuffer str) {
 		"create index if not exists idx_fivefifty_generate on fivefifty((generate-(generate%86400)-%d));", timeZone);
 
 	rc = sqlite3_exec(db, str->data, NULL, 0, &sqlite3Error);
-	KC_CHECK_SQLITE3_EXEC(rc, sqlite3Error, str);
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
+	KC_SQLITE3_CHECK_EXEC(rc, sqlite3Error, str);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
 	return KC_OK;
 KC_ERROR_CLEAR:
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
 	return KC_FAIL;
 }
 
@@ -142,16 +83,17 @@ int32_t kcGenerateFilePointers(sqlite3* db, StringBuffer str) {
 		"create index if not exists idx_filepointers_generate on filepointers(generate);";
 
 	rc = sqlite3_exec(db, sql, NULL, 0, &sqlite3Error);
-	KC_CHECK_SQLITE3_EXEC(rc, sqlite3Error, str);
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
+	KC_SQLITE3_CHECK_EXEC(rc, sqlite3Error, str);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
 	return KC_OK;
 KC_ERROR_CLEAR:
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
 	return KC_FAIL;
 }
 
-int32_t kcCheckSqlite3Object(sqlite3* db, sqlite3_stmt* stmt, StringBuffer str) {
+int32_t kcCheckSqlite3Object(sqlite3* db, StringBuffer str) {
 	int32_t rc = 0;
+	sqlite3_stmt* stmt = NULL;
 	char* sqlite3Error = NULL;
 	char** objNotExists = NULL;
 	StringBuffer elems = NULL;
@@ -186,15 +128,15 @@ int32_t kcCheckSqlite3Object(sqlite3* db, sqlite3_stmt* stmt, StringBuffer str) 
 	resetStringBuffer(str);
 	appendStringBufferStr(str, "select 1 from sqlite_master where type=? and name=?");
 	rc = sqlite3_prepare_v2(db, str->data, (int32_t)str->len, &stmt, NULL);
-	KC_CHECK_SQLITE3(rc, KC_2STR(sqlite3_prepare_v2), str);
+	KC_SQLITE3_CHECK_RC(rc, KC_2STR(sqlite3_prepare_v2), str);
 	//绑定sqlite_master的对象类型为表
 	rc = sqlite3_bind_text(stmt, 1, "table", (int32_t)strlen("table"), NULL);
-	KC_CHECK_SQLITE3(rc, KC_2STR(sqlite3_bind_text), str);
+	KC_SQLITE3_CHECK_RC(rc, KC_2STR(sqlite3_bind_text), str);
 	resetStringBuffer(str);
 	for (size_t i = 0; i < STRING_COUNT; ++i) {
 		//绑定表名
 		rc = sqlite3_bind_text(stmt, 2, strObjects[i].value, strObjects[i].len, NULL);
-		KC_CHECK_SQLITE3(rc, KC_2STR(sqlite3_bind_text), str);
+		KC_SQLITE3_CHECK_RC(rc, KC_2STR(sqlite3_bind_text), str);
 		rc = sqlite3_step(stmt);
 		switch (rc) {
 		case SQLITE_DONE:do {		//未找到数据-表示表不存在
@@ -208,11 +150,11 @@ int32_t kcCheckSqlite3Object(sqlite3* db, sqlite3_stmt* stmt, StringBuffer str) 
 		} while (0);
 		break;
 		default:do {							//发生错误
-			KC_CHECK_SQLITE3_STEP_FAIL(rc, str);
+			KC_SQLITE3_CHECK_STEP_FAIL(rc, str);
 		} while (0);
 		break;
 		}
-		KC_CHECK_SQLITE3(sqlite3_reset(stmt), KC_2STR(sqlite3_reset), str);//将预准备语句对象重置回其初始状态，以便重新执行。如使用sqlite3_bind_*()API将值绑定的SQL语句变量都将保留其值
+		KC_SQLITE3_CHECK_RC(sqlite3_reset(stmt), KC_2STR(sqlite3_reset), str);//将预准备语句对象重置回其初始状态，以便重新执行。如使用sqlite3_bind_*()API将值绑定的SQL语句变量都将保留其值
 	}
 	//现在知道了动态数组的大小，然后我们重新设置动态数数组大小
 	KC_VAL32_TO_BYTES(pelemsBegin, arrayCout);
@@ -225,7 +167,7 @@ int32_t kcCheckSqlite3Object(sqlite3* db, sqlite3_stmt* stmt, StringBuffer str) 
 		for (uint32_t j = 0; j < currentSize; ++j) {
 			KC_VAL32_FROM_BYTES(ptmp, bval32, stringLen);			//字符串长度	
 			stringVal = kcStr2int(ptmp, stringLen);
-			ptmp += stringLen;
+			ptmp += stringLen;		
 			switch (stringVal) {
 			case 802804853: //fivefifty
 				KC_CHECK_RCV2(kcGenerateFiveFifty(db, str));
@@ -238,12 +180,14 @@ int32_t kcCheckSqlite3Object(sqlite3* db, sqlite3_stmt* stmt, StringBuffer str) 
 	}
 
 
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
+	KC_SQLITE3_SAFE_STMT_DESTROY(stmt);
 	KC_SAFE_STRINGBUF_FREE(elems);
 	return KC_OK;
 KC_ERROR_CLEAR:
 	//KC_SAFE_STRING_ARRAY_FREE(objNotExists, SQLITE3_OBJ_COUNT);
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
+	KC_SQLITE3_SAFE_STMT_DESTROY(stmt);
 	KC_SAFE_STRINGBUF_FREE(elems);
 	return KC_FAIL;
 }
@@ -252,7 +196,7 @@ KC_ERROR_CLEAR:
 int32_t main(int32_t argc, char* argv[]) {
 	int32_t rc = 0;
 	sqlite3* db = NULL;
-	sqlite3_stmt* stmt = NULL;
+	
 	StringBuffer str = NULL;
 	char* sqlite3Error = NULL;
 
@@ -261,34 +205,32 @@ int32_t main(int32_t argc, char* argv[]) {
 	//insert into fivefifty(objectid,temperature,humidity) values(1,24400,5100);
 
 	//rc = sqlite3_open_v2(NULL, &db, SQLITE_OPEN_MEMORY | SQLITE_OPEN_PRIVATECACHE | SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE, NULL);
-	rc = sqlite3_open_v2("file:///E:/data.db", &db, SQLITE_OPEN_SHAREDCACHE | SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE, NULL);
-	KC_CHECK_SQLITE3(rc, KC_2STR(sqlite3_open_v2), str);
+	rc = sqlite3_open_v2("file:///D:/data.db", &db, SQLITE_OPEN_SHAREDCACHE | SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE, NULL);
+	KC_SQLITE3_CHECK_RC(rc, KC_2STR(sqlite3_open_v2), str);
 	//设置密码
 	rc = sqlite3_key(db, "123", 3);
-	KC_CHECK_SQLITE3(rc, KC_2STR(sqlite3_key), str);
+	KC_SQLITE3_CHECK_RC(rc, KC_2STR(sqlite3_key), str);
 	//开启事务
 	rc = sqlite3_exec(db, "begin;", NULL, 0, &sqlite3Error);
-	KC_CHECK_SQLITE3_EXEC(rc, sqlite3Error, str);
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
+	KC_SQLITE3_CHECK_EXEC(rc, sqlite3Error, str);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
 
-	rc = kcCheckSqlite3Object(db, stmt, str);
+	rc = kcCheckSqlite3Object(db, str);
 	KC_CHECK_RCV2(rc);
 	//提交事务
 	rc = sqlite3_exec(db, "commit;", NULL, 0, &sqlite3Error);
-	KC_CHECK_SQLITE3_EXEC(rc, sqlite3Error, str);
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
+	KC_SQLITE3_CHECK_EXEC(rc, sqlite3Error, str);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
 
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
-	KC_SAFE_SQLITE3_STMT_DESTROY(stmt);
-	KC_SAFE_SQLITE3_CLOSE(db);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
+	KC_SQLITE3_SAFE_CLOSE(db);
 	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_SUCCESS;
 KC_ERROR_CLEAR:
 	//回滚事务
 	sqlite3_exec(db, "rollback;", NULL, 0, NULL);
-	KC_SAFE_SQLITE3_FREE(sqlite3Error);
-	KC_SAFE_SQLITE3_STMT_DESTROY(stmt);
-	KC_SAFE_SQLITE3_CLOSE(db);
+	KC_SQLITE3_SAFE_FREE(sqlite3Error);
+	KC_SQLITE3_SAFE_CLOSE(db);
 	fprintf(stderr, "%s\n", str->data);
 	KC_SAFE_STRINGBUF_FREE(str);
 	return EXIT_FAILURE;

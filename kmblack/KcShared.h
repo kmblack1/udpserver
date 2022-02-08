@@ -109,9 +109,41 @@ extern "C" {
 	/// </summary>
 	/// <param name="bytes">内存字节</param>
 	/// <param name="bytesLen">内存字节大小</param>
+	/// <param name="isFlag">是否在开关添加标志位0x</param>
 	/// <param name="buffer">[in,out]如果成功为16进制字符串，失败为异常信息</param>
 	/// <returns>KC_OK表示成功，其它表示失败</returns>
-	extern KC_EXTERNAL int32_t KCAPI kcHexStringFromBytes(const uint8_t* bytes, size_t bytesLen, StringBuffer buffer);
+	extern KC_EXTERNAL int32_t KCAPI kcHexStringFromBytes(const uint8_t* bytes, size_t bytesLen, int32_t isFlag, StringBuffer buffer);
+
+
+	/// <summary>
+	/// 随机生成数字大小写字母组成的字符串
+	///  在调用前调用KC_SET_RANDOM_FACTOR设置随机数因子
+	/// </summary>
+	/// <param name="min">表示字符串最小字符数量</param>
+	/// <param name="max">表示字符串最大字符数量</param>
+	/// <param name="flag">
+	/// 标记位
+	/// 1:	仅生成数字			
+	/// 2:	仅生成大写字母
+	/// 3 :	仅生成数字或大写字母
+	/// 4 :	仅生成小写字母
+	/// 5 :	仅生成数字或小写字母
+	/// 6 :	仅生成大写字母或小写字母
+	/// 7 :	仅生成数字或大写字母或小写字母
+	/// 8 :	仅生成汉字
+	/// 9 :	仅生成数字或汉字
+	/// 10 : 仅生成大写字母或汉字
+	/// 11 : 仅生成数字或大写字母或汉字
+	/// 12 : 仅生成小写字母或汉字
+	/// 13 : 仅生成数字或小写字母或汉字
+	/// 14 : 仅生成大写字母或小写字母或汉字
+	/// 其它 : 随机生成数字, 大小写字母或汉字
+	/// </param>
+	/// <param name="random">[in,out]随机字符串</param>
+	/// <param name="error">[in,out]错误时的异常信息</param>
+	/// <returns>KC_OK表示成功，其它表示失败</returns>
+	extern KC_EXTERNAL int32_t KCAPI kcRandomString(uint16_t min,uint16_t max, uint8_t flag, StringBuffer random, StringBuffer error);
+
 #pragma endregion
 
 #pragma region

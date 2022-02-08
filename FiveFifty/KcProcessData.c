@@ -1,5 +1,5 @@
 ﻿#include <pg_bswap.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 # include<windows.h>
 #endif
 
@@ -138,14 +138,14 @@ int32_t kcFiveFiftySaveAsPostgreSQL(PGconn* conn, const StringBuffer revc, const
 
 	//模拟保存数据
 	int64_t microsec = 3000;
-#ifdef _WIN32
+#ifdef _MSC_VER
 	SleepEx((microsec < 500 ? 1 : (microsec + 500) / 1000), 0);
 #else
 	struct timeval delay;
 	delay.tv_sec = microsec / 1000000L;
 	delay.tv_usec = microsec % 1000000L;
 	(void)select(0, NULL, NULL, NULL, &delay);
-#endif // _WIN32
+#endif // _MSC_VER
 
 	
 }

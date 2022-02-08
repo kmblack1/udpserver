@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <libintl.h>
 #include <pthread.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #	include <conio.h>
 #	ifdef _DEBUG
 #		include <vld.h>
@@ -99,11 +99,11 @@ int main(int argc, char* argv[]) {
 	initscr();
 #endif
 	do {
-#ifdef _WIN32
+#ifdef _MSC_VER
 		ch = _getch();
 #else
 		ch = getch();
-#endif // _WIN32
+#endif // _MSC_VER
 	} while (27 != ch);
 #ifdef __GNUC__
 	endwin();

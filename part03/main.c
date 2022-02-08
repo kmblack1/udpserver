@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <time.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #	include <io.h>
 #	ifdef _DEBUG
 #		include <vld.h>
@@ -37,7 +37,7 @@ int32_t main(int32_t argc, char* argv[]) {
 
 
 	time(&now);						//获取系统日期和时间
-#ifdef _WIN32
+#ifdef _MSC_VER
 	localtime_s(ptime, &now);   //获取当地日期和时间
 #else
 	ptime = localtime(&now);

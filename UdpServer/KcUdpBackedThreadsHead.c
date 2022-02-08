@@ -1,6 +1,6 @@
-﻿#ifdef _WIN32
+﻿#ifdef _MSC_VER
 #include <WS2tcpip.h>
-#endif // _WIN32
+#endif // _MSC_VER
 
 #include "pg_bswap.h"
 #include "KcUdpBackedThreadsHead.h"
@@ -70,7 +70,7 @@ int32_t kcGenerateSendSocketRaw(const struct KC_CONFIG* const config, StringBuff
 	if (rc)
 		KC_GOTOERR(error, "setsockopt SO_SNDBUF failed with error %d\n", KC_SOCKET_GETLASTERROR);
 	//设置发送数据时的超时时间
-#ifdef _WIN32
+#ifdef _MSC_VER
 	rc = setsockopt(sockRaw, SOL_SOCKET, SO_SNDTIMEO, (const char*)&config->sendTimeout, (int32_t)sizeof(int32_t));
 	if (rc)
 		KC_GOTOERR(error, "set send timeout failed with error %d\n", KC_SOCKET_GETLASTERROR);

@@ -48,7 +48,7 @@
 mkdir:创建目录
 *****************************************************************************/
 
-#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(_MSC_VER) || defined(__CYGWIN__)
 #define PG_BINARY	O_BINARY
 #define PG_BINARY_A "ab"
 #define PG_BINARY_R "rb"
@@ -60,7 +60,7 @@ mkdir:创建目录
 #define PG_BINARY_W "w"
 #endif
 
-#if defined(_WIN32)
+#if defined(_MSC_VER)
 #define KC_ACCESS(_name,_mode) _access((_name),(_mode))
 #define KC_MKDIR(_name,_mode) _mkdir((_name))
 #else
@@ -92,7 +92,7 @@ mkdir:创建目录
 }  while (0)
 
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 /*打开文件错误检查*/
 #	define KC_FILE_OPEN_AND_CHECK(stream,fullfile,flag) do {\
 		errno_t errcode;\
@@ -110,7 +110,7 @@ mkdir:创建目录
 			goto KC_ERROR_CLEAR;\
 		}\
 	} while (0)
-#endif // _WIN32
+#endif // _MSC_VER
 
 /*检查文件描述符
 https://docs.microsoft.com/en-us/cpp/c-runtime-library/errno-constants?view=msvc-170

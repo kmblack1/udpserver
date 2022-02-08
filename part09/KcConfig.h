@@ -9,7 +9,7 @@
 #ifndef KC_0FB1C9F6_9F5A_FF4E_87AB_E6D5B8CB779C
 #define KC_0FB1C9F6_9F5A_FF4E_87AB_E6D5B8CB779C
 #include <stdint.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #   include <winsock2.h>
 #else
 #   include <unistd.h>

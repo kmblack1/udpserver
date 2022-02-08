@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <KcCore.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #	ifdef _DEBUG
 #		include <vld.h>
 #	endif

@@ -135,7 +135,7 @@ int32_t kcServerPluginsLoadLibrary(struct KC_PLUGIN_ITEM* plugin, StringBuffer e
 	char* load_error;
 #endif
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 	plugin->handler = LoadLibrary(plugin->library);
 	if (NULL == plugin->handler)
 		KC_GOTOERR(error, gettext("load library \"%s\" fail."), plugin->library);
@@ -164,7 +164,7 @@ KC_ERROR_CLEAR:
 
 #pragma region 卸载模块
 void kcServerPluginsUnloadItem(struct KC_PLUGIN_ITEM* pluItem) {
-#ifdef _WIN32
+#ifdef _MSC_VER
 	BOOL isOk;
 #else
 	int32_t rc;
@@ -173,7 +173,7 @@ void kcServerPluginsUnloadItem(struct KC_PLUGIN_ITEM* pluItem) {
 
 
 	if (NULL != pluItem->handler) {
-#ifdef _WIN32
+#ifdef _MSC_VER
 		isOk = FreeLibrary(pluItem->handler);
 		if (!isOk)
 			fprintf(stderr, gettext("unload module \"%s\" fail.\n"), pluItem->library);

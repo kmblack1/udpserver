@@ -22,7 +22,7 @@ void kcSaveLog(const char* const logPath, const StringBuffer context, const char
 
 	str = createStringBuffer();
 	time(&now);						//获取系统日期和时间
-#ifdef _WIN32
+#ifdef _MSC_VER
 	localtime_s(ptr, &now);   //获取当地日期和时间
 #else
 	localtime_r(&now, ptr);

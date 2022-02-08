@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <pthread.h>
 #include <jansson.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #   include <winsock2.h>
 #	include <libpq-fe.h>
 #else

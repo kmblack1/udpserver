@@ -6,7 +6,7 @@
 *
 *	网络操作函数
 *****************************************************************************/
-#ifdef _WIN32
+#ifdef _MSC_VER
 #	include <conio.h>
 #	include <Ws2tcpip.h>
 #	include <Ws2def.h>
@@ -40,7 +40,7 @@ int32_t kcString2NetworkAddressV4(const char* const addresses, struct in_addr* c
 			hints.ai_family = AF_INET;
 			rc = getaddrinfo(addresses, NULL, &hints, &result);
 			if (rc) {
-#ifdef _WIN32
+#ifdef _MSC_VER
 				KC_GOTOERR(buffer, gettext("%s failed with error: %d"), KC_2STR(getaddrinfo), KC_SOCKET_GETLASTERROR);
 #else
 				KC_GOTOERR(buffer, gettext("%s failed with error: %d"), KC_2STR(getaddrinfo), errno);

@@ -1,0 +1,15 @@
+﻿	客户端发送的数据格式
+	MTU(576 - 28 = 548 )
+	2字节标识符 + 1字节command + 2字节数据长度 + 8字节文件编号[变种雪花算法snowflake] + 8字节文件长度 + 8字节偏移量 + 文件数据(max 519) + 2字节crc16
+	578 - 2 - 1- 2- 8 - 8 -8 = 519
+
+
+	
+	
+
+	客户端首次发送文件时将udp server将打开的文件信息写入filepointers和fplasts,以后udp server每接收一次都将接收时间写入fplasts
+	udp server在后台有再开一个线程，实现关闭句柄或清理资源功能
+		1.每过3秒运行一次，检查fplasts最后两条记录的generate相差是否>=3秒（表示发收和接收文件失败），如>=3秒则从filepointers取出文件句柄然后关闭
+		2.每天03:00时对sql进行VACUUM	
+
+		jetpack room

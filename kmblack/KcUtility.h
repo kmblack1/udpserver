@@ -11,7 +11,8 @@
 #define KC_043055AA_F295_42FC_BE3A_D4B24B4AAE54
 
 #include <stdio.h>
-#ifdef _WIN32
+#include <stdlib.h>
+#ifdef _MSC_VER
 #	include <io.h>
 #  include <winsock2.h>
 #else
@@ -69,11 +70,6 @@ static const char UTF8BOM[4] = { (char)0xEF ,(char)0xBB ,(char)0xBF,(char)0x00 }
 #define KC_2STR(x) #x
 
 /*****************************************************************************
-*	生成指定范围的随机数
-*****************************************************************************/
-#define RANGE_RANDOM(lmin, lmax)(rand() % (lmax + 1 - lmin) + lmin)
-
-/*****************************************************************************
 *	浮点与整型转换		注意只能用指针转换
 *****************************************************************************/
 #define KC_FLOAT_TO_INT32(x) (*((int32_t*)(&x)))
@@ -105,7 +101,7 @@ static const char UTF8BOM[4] = { (char)0xEF ,(char)0xBB ,(char)0xBF,(char)0x00 }
 /*****************************************************************************
 *	SOCKET定义
 *****************************************************************************/
-#ifdef _WIN32
+#ifdef _MSC_VER
 #	define KC_SOCKET_GETLASTERROR WSAGetLastError()
 
 #	define KC_SOCKET_CLOSE(sock) do {\
@@ -352,7 +348,7 @@ typedef int SOCKET;
 	}	\
 }  while (0)
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 /*打开文件并错误检查*/
 #	define KC_FILE_OPEN_AND_CHECK(stream,fullfile,flag,str) do {\
 		errno_t errcode;\
@@ -372,7 +368,7 @@ typedef int SOCKET;
 			goto KC_ERROR_CLEAR;\
 		}\
 	} while (0)
-#endif // _WIN32
+#endif // _MSC_VER
 
 /*检查文件描述符
 https://docs.microsoft.com/en-us/cpp/c-runtime-library/errno-constants?view=msvc-170
@@ -397,7 +393,7 @@ ENFILE:系统中打开的文件过多。
 } while (0)
 
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #   define fseeko(stream, offset, origin) _fseeki64(stream, offset, origin)
 #   define ftello(stream) _ftelli64(stream)
 #else
@@ -408,6 +404,51 @@ ENFILE:系统中打开的文件过多。
 #       define ftello(stream) ftello64(stream)
 #   endif
 #endif
+
+/*****************************************************************************
+*    获取进程编号
+*****************************************************************************/
+typedef unsigned int processid_t;
+#ifdef _MSC_VER
+#   define KC_GET_PROCESS_ID() (_getpid())
+#else
+#   define KC_GET_PTHREAD_ID() (getpid())
+#endif
+
+/*****************************************************************************
+*    获取线程编号
+*****************************************************************************/
+#ifdef _MSC_VER
+typedef unsigned long ptheradid_t;
+#   define KC_GET_PTHREAD_ID() (pthread_getw32threadid_np(pthread_self()))
+#else
+typedef pthread_t ptherad_id;
+#   define KC_GET_PTHREAD_ID() (pthread_self())
+#endif
+
+
+/*****************************************************************************
+*	设置高质量随机数数因子
+*  pid = KC_GET_PTHREAD_ID();
+*  gettimeofday(&tv, NULL);
+******************************************* **********************************/
+#define KC_SET_RANDOM_FACTOR(pid,tv) do{ \
+	srand( \
+		(uint32_t)( \
+			((uint32_t)((pid) << 16)) \
+			^ ((uint32_t)(pid)) \
+			^ ((uint32_t)((tv).tv_sec)) \
+			^ ((uint32_t)((tv).tv_usec)) \
+		) \
+	); \
+}while(0)
+
+/*****************************************************************************
+* 生成指定范围的随机数，在调用前调用KC_SET_RANDOM_FACTOR
+******************************************* **********************************/
+#define KC_RANDOM(kmin,kmax)  ( rand() % (kmax  - kmin + 1) + kmin )
+
+
 /*****************************************************************************
 *    copy string (truncating the result)
 *****************************************************************************/
@@ -419,7 +460,7 @@ ENFILE:系统中打开的文件过多。
 #endif
 
 
-#if defined(_WIN32)	
+#if defined(_MSC_VER)	
 #	define KC_int642str(buf,len,val) _snprintf_s((buf),(len),"%I64d", (val));
 #	define KC_uint642str(buf,len,val) _snprintf_s((buf),(len),"%I64u", (val));
 #	define KC_str2int64(str,val) sscanf_s((str),"%I64d", (val));
@@ -473,7 +514,7 @@ getcwd:取得当前的工作目录
   *	literal control-Z.  The other affect is that we see CRLF, but
   *	that is OK because we can already handle those cleanly.
   */
-#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(_MSC_VER) || defined(__CYGWIN__)
 #define PG_BINARY	O_BINARY
 #define PG_BINARY_A "ab"
 #define PG_BINARY_R "rb"
@@ -485,7 +526,7 @@ getcwd:取得当前的工作目录
 #define PG_BINARY_W "w"
 #endif
 
-#if defined(_WIN32)
+#if defined(_MSC_VER)
 #define KC_ACCESS(_name,_mode) _access((_name),(_mode))
 #define KC_MKDIR(_name,_mode) _mkdir((_name))
 #define KC_GETCWD(__buf,__size) _getcwd((__buf),(__size))

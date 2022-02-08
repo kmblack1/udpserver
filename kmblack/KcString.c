@@ -130,7 +130,7 @@ KC_ERROR_CLEAR:
 	return KC_FAIL;
 }
 
-int32_t kcHexStringFromBytes(const uint8_t* bytes, size_t bytesLen, StringBuffer buffer) {
+int32_t kcHexStringFromBytes(const uint8_t* bytes, size_t bytesLen, int32_t isFlag, StringBuffer buffer) {
 	static const char HEX_CHARS[] = "0123456789ABCDEF";
 	uint8_t			hi, lo;
 	const uint8_t* src = bytes;
@@ -140,7 +140,8 @@ int32_t kcHexStringFromBytes(const uint8_t* bytes, size_t bytesLen, StringBuffer
 
 
 	resetStringBuffer(buffer);
-	appendStringBufferStr(buffer, "0x");
+	if (isFlag)
+		appendStringBufferStr(buffer, "0x");
 	for (size_t i = 0; i < bytesLen; ++i) {
 		hi = src[i] >> 4;
 		lo = src[i] & 0x0F;

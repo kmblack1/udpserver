@@ -155,6 +155,7 @@
     <ClCompile Include="KcIpV4.c" />
     <ClCompile Include="KcJson.c" />
     <ClCompile Include="KcLog.c" />
+    <ClCompile Include="KcRandomString.c" />
     <ClCompile Include="KcString.c" />
     <ClCompile Include="KcUdp.c" />
     <ClCompile Include="stringbuffer.c" />
@@ -166,6 +167,7 @@
     <ClInclude Include="KcCore.h" />
     <ClInclude Include="KcIpV4.h" />
     <ClInclude Include="KcShared.h" />
+    <ClInclude Include="KcSqlite3.h" />
     <ClInclude Include="KcStdio.h" />
     <ClInclude Include="KcUtility.h" />
     <ClInclude Include="pg_bswap.h" />

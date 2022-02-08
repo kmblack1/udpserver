@@ -21,8 +21,18 @@
     <ClCompile Include="KcVld.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="argparse.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.md" />
+    <None Include="sql.sql" />
+    <None Include="snowflake.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="argparse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

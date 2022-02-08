@@ -26,7 +26,7 @@ int32_t main(int32_t argc, char* argv[]) {
 	StringBuffer str = NULL;
 	char* stdPath = NULL;
 	char path[KC_MAX_PATH + sizeof(char)];
-#ifdef _WIN32
+#ifdef _MSC_VER
 	char* depend = NULL, * desc = NULL;
 	int32_t install = 0, uninstall = 0, stop = 0;
 	struct argparse_option options[] = {
@@ -151,11 +151,11 @@ int32_t consoleRuning(const char* const stdPath, StringBuffer str) {
 	initscr();
 #endif
 	do {
-#ifdef _WIN32
+#ifdef _MSC_VER
 		ch = _getch();
 #else
 		ch = getch();
-#endif // _WIN32
+#endif // _MSC_VER
 	} while (27 != ch);
 #ifdef __GNUC__
 	endwin();

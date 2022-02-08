@@ -1,7 +1,7 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #	ifdef _DEBUG
 #		include <vld.h>
 #	endif
@@ -22,7 +22,7 @@ int32_t kcStringCopy(const char* source, char** ptr) {
 	//执行成功的返回值，执行成功不需要释放
 	//外部使用完成后调用KC_SAFE_MODULE_FREE宏释放
 	char* str = NULL;
-#ifdef _WIN32
+#ifdef _MSC_VER
 	errno_t errcode;
 #endif
 

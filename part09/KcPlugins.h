@@ -10,7 +10,7 @@
 #define KC_EBBA23E8_31F3_CD4C_BA71_4264EA36F72A
 
 #include <stdint.h>
-#ifdef _WIN32
+#ifdef _MSC_VER
 #	include <Windows.h>
 #	include <libpq-fe.h>
 #else
@@ -43,7 +43,7 @@ struct KC_PLUGIN_ITEM {
 	size_t identifierLen;
 	char* library;
 	char* entry_process_data;
-#ifdef _WIN32
+#ifdef _MSC_VER
 	HINSTANCE handler;
 #else
 	void* handler;

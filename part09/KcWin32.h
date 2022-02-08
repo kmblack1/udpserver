@@ -9,7 +9,7 @@
 
 #ifndef KC_5A076818_04C4_B24C_B324_06C14CE245A3
 #define KC_5A076818_04C4_B24C_B324_06C14CE245A3
-#ifdef _WIN32
+#ifdef _MSC_VER
 
 #include <Windows.h>
 #include <DbgHelp.h>
@@ -27,5 +27,5 @@
 /// <returns></returns>
 LONG ApplicationCrashHandler(EXCEPTION_POINTERS* pException);
 
-#endif //_WIN32
+#endif //_MSC_VER
 #endif	/*KC_5A076818_04C4_B24C_B324_06C14CE245A3 */
