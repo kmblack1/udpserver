@@ -13,7 +13,7 @@
 #include <pthread.h>
 #ifdef _MSC_VER
 #	include <Windows.h>
-#	include <libpq-fe.h>
+//#	include <libpq-fe.h>
 #else
 #	include <dlfcn.h>
 #	include <postgresql/libpq-fe.h>
@@ -71,8 +71,12 @@ struct KC_BACKEND_ITEM {
 };
 /*****************************************************************************
 *	处理解析后的数据
+*	如果你使用的数据库不是SQLite3，请注意以下几点：
+*		1.数据库配置需要写在config.json配置文件中，同时数据库密码请使用aes加密（截止目前比较安全可靠且广泛使用的对称加密算法）；
+*		2.取消函数指针参数中数据库连接句柄参数注释，同时修改PGconn* conn为你使用的数据库句柄（PGconn是PostgreSQL数据库）；
+*		3.SQLite3为单机数据库，不适合在并发中使用，因此只能在使用前打开，用完后立即关闭，同时根据sql命令类型加只读锁或读写锁。
 *****************************************************************************/
-typedef  int32_t(*kcPluginProcessData)(const struct KC_CONFIG* const config, struct KC_BACKEND_ITEM* backendItem, size_t identifierLen, PGconn* conn, pthread_rwlock_t *rwlock, StringBuffer error);
+typedef  int32_t(*kcPluginProcessData)(const struct KC_CONFIG* const config, struct KC_BACKEND_ITEM* backendItem, size_t identifierLen, /*PGconn* conn, */pthread_rwlock_t* rwlock, StringBuffer error);
 
 
 /*****************************************************************************

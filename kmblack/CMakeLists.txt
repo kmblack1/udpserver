@@ -43,12 +43,12 @@ SET(SRC
         KcDateTime.c
         KcIpV4.c
         KcJson.c
-        KcLibpq.c
         KcLog.c
+        KcRandomString.c
         KcString.c
         KcUdp.c
-        stringbuffer.c
         KcVld.c
+        stringbuffer.c
 )
 #生成动态链接库
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRC})
@@ -98,8 +98,9 @@ SET(KMBLACK_PUBLIC_HEADERS
         instr_time.h
         KcCore.h
         KcIpV4.h
-        KcLibpq.h
+        KcRegex.h
         KcShared.h
+        KcSqlite3.h
         KcStdio.h
         KcUtility.h
         pg_bswap.h

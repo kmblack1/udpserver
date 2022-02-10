@@ -11,10 +11,10 @@
 #include "KcProcessData.h"
 
 
-int32_t kcFiveFiftySaveAsPostgreSQL(PGconn* conn, const StringBuffer revc, const struct KC_FIVEFIFTY* data, StringBuffer error);
+int32_t kcFiveFiftySaveAsPostgreSQL(/*PGconn* conn,*/ const StringBuffer revc, const struct KC_FIVEFIFTY* data, StringBuffer error);
 int32_t kcFiveFiftyReply(const struct KC_CONFIG* const config, struct KC_BACKEND_ITEM* item, size_t identifierLen, const struct KC_FIVEFIFTY* data, uint8_t errCode, StringBuffer error);
 
-void kcSafeFreeFifty(struct KC_FIVEFIFTY* ptr) {
+void kcSafeFiveFiftyFree(struct KC_FIVEFIFTY* ptr) {
 	if (NULL == ptr)
 		return;
 	if (NULL != ptr->identifier)
@@ -22,7 +22,7 @@ void kcSafeFreeFifty(struct KC_FIVEFIFTY* ptr) {
 	free(ptr);
 }
 
-int32_t kcFiveFiftyPluginProcessData(const struct KC_CONFIG* const config, struct KC_BACKEND_ITEM* item, size_t identifierLen, PGconn* conn, pthread_rwlock_t* rwlock, StringBuffer error) {
+int32_t kcFiveFiftyPluginProcessData(const struct KC_CONFIG* const config, struct KC_BACKEND_ITEM* item, size_t identifierLen, /*PGconn* conn, */pthread_rwlock_t* rwlock, StringBuffer error) {
 	struct KC_FIVEFIFTY* data = NULL;
 	const char* ptmp = item->recv->data;
 	uint8_t bval16[2], bval32[4];
@@ -31,7 +31,7 @@ int32_t kcFiveFiftyPluginProcessData(const struct KC_CONFIG* const config, struc
 
 	KC_VALIDATE_PARA_PTR(config, error);
 	KC_VALIDATE_PARA_PTR(item, error);
-	KC_VALIDATE_PARA_PTR(conn, error);
+	//KC_VALIDATE_PARA_PTR(conn, error);
 	KC_VALIDATE_PARA_PTR(rwlock, error);
 
 	//计算校验和
@@ -63,13 +63,13 @@ int32_t kcFiveFiftyPluginProcessData(const struct KC_CONFIG* const config, struc
 	KC_VAL32_FROM_BYTES(ptmp, bval32, ival32);
 	data->humidity = KC_UINT32_TO_FLOAT(ival32);
 	//保存至数据库
-	KC_CHECK_RCV2(kcFiveFiftySaveAsPostgreSQL(conn, item->recv, data, error));
+	KC_CHECK_RCV2(kcFiveFiftySaveAsPostgreSQL(/*conn,*/ item->recv, data, error));
 	//伪造数据包并回发数据
 	kcFiveFiftyReply(config, item, identifierLen, data, 0, error);
-	KC_SAFE_FREE_FIVE_FIFTY(data);
+	KC_SAFE_FIVE_FIFTY_FREE(data);
 	return KC_OK;
 KC_ERROR_CLEAR:
-	KC_SAFE_FREE_FIVE_FIFTY(data);
+	KC_SAFE_FIVE_FIFTY_FREE(data);
 	return KC_FAIL;
 }
 
@@ -93,7 +93,7 @@ delete from fivefifty;
 
 vacuum analyze fivefifty;
 */
-int32_t kcFiveFiftySaveAsPostgreSQL(PGconn* conn, const StringBuffer revc, const struct KC_FIVEFIFTY* data, StringBuffer error) {
+int32_t kcFiveFiftySaveAsPostgreSQL(/*PGconn* conn,*/ const StringBuffer revc, const struct KC_FIVEFIFTY* data, StringBuffer error) {
 //	struct KCPQ_EXECPARAMS* params = NULL;
 //	PGresult* result = NULL;
 //	int32_t tran_flag;
@@ -139,15 +139,16 @@ int32_t kcFiveFiftySaveAsPostgreSQL(PGconn* conn, const StringBuffer revc, const
 	//模拟保存数据
 	int64_t microsec = 3000;
 #ifdef _MSC_VER
-	SleepEx((microsec < 500 ? 1 : (microsec + 500) / 1000), 0);
+	SleepEx((DWORD)(microsec < 500 ? 1 : (microsec + 500) / 1000), 0);
 #else
+
 	struct timeval delay;
 	delay.tv_sec = microsec / 1000000L;
 	delay.tv_usec = microsec % 1000000L;
 	(void)select(0, NULL, NULL, NULL, &delay);
 #endif // _MSC_VER
 
-	
+	return KC_OK;
 }
 
 

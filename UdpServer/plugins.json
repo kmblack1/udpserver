@@ -3,5 +3,10 @@
     "identifier": "0x0551",
     "library": "plugins/FiveFifty.dll",
     "entry_process_data": "kcFiveFiftyPluginProcessData"
+  },
+  {
+    "identifier": "0x7567",
+    "library": "plugins/LargeFile.dll",
+    "entry_process_data": "kcFiveFiftyPluginProcessData"
   }
 ]

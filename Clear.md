@@ -17,6 +17,7 @@ rd /S /Q %PTRTS%\part08\x64
 rd /S /Q %PTRTS%\part09\x64
 rd /S /Q %PTRTS%\part10\x64
 rd /S /Q %PTRTS%\part11\x64
+rd /S /Q %PTRTS%\part12\x64
 rd /S /Q %PTRTS%\stack_dynamic_string_array\x64
 rd /S /Q %PTRTS%\UdpServer\x64
 ```

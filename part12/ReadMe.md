@@ -26,18 +26,18 @@ sudo apt-get -y install build-essential libtool automake cmake unzip clang git w
 
 1.客户端向Udp Server发送数据前验证用户信息（用户名和密码最大不超过533字节 = 548-2-1-2-8-2）
 
-	[2字节标识符 + 1字节command(0x01)+ 2字节数据长度(10) + 用户id + 用户密码(sha256) + 8字节文件长度+ 2字节crc16]
+	[2字节标识符 + 1字节command(0x01)+ 1字节用户id长度 + 用户id +1字节用户密码长度（sha1长度固定为40字节） + 用户密码(sha1) + 8字节文件长度+ 2字节crc16]
 
 2.用户验证
 
 如果用户名和密码错误，数据回发给客户端（9字节）
 	
-	[2字节标识符 + 1字节command(0x01) + 2字节数据长度(10) + 2字节状态码（0x0001） + 2字节crc16]	
+	[2字节标识符 + 1字节command(0x01) + 2字节状态码（0x0000成功，其它为异常） + 2字节crc16]
 
 
 用户名和密码正确，Udp Server将客户端请求写入数据库filebegin表，并生成8字节ID，Udp Server将ID回发给客户端（15字节）<br />
 
-	[2字节标识符 + 1字节command(0x02) + 2字节数据长度(10) + 8字节ID[变种雪花算法snowflake] + 2字节crc16]
+	[2字节标识符 + 1字节command(0x01) + 8字节ID[变种雪花算法snowflake] + 2字节crc16]
 
 3.客户端向Udp Server循环发送数据
 
@@ -48,7 +48,7 @@ sudo apt-get -y install build-essential libtool automake cmake unzip clang git w
 
 4.Udp Server收到数据回发给客户端（9字节）
 
-	[2字节标识符 + 1字节command(0x02) + 2字节数据长度(10) + 2字节状态码（0x0000成功，其它为异常） + 2字节crc16]
+	[2字节标识符 + 1字节command(0x02) + 2字节状态码（0x0000成功，其它为异常） + 2字节crc16]
 
 5.客户端收到Udp Server回发的状态数据后，检查如果成功则继续发送下一个包，否则重发。
 

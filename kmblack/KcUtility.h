@@ -412,7 +412,7 @@ typedef unsigned int processid_t;
 #ifdef _MSC_VER
 #   define KC_GET_PROCESS_ID() (_getpid())
 #else
-#   define KC_GET_PTHREAD_ID() (getpid())
+#   define KC_GET_PROCESS_ID() (getpid())
 #endif
 
 /*****************************************************************************

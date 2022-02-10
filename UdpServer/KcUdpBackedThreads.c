@@ -147,7 +147,7 @@ struct KC_BACKEND_ITEM* kcUdpDequeue(struct KC_SHARED* const shared) {
 void kcUdpBackendThreadWorks(void* obj) {
 	int32_t rc;
 	StringBuffer str = NULL;
-	PGconn* conn = NULL;
+	//PGconn* conn = NULL;
 	const struct KC_PLUGIN_ITEM* plugin;
 	struct KC_BACKEND_ITEM* backendItem;
 	struct KC_SHARED* const shared = (struct KC_SHARED* const)obj;
@@ -177,7 +177,7 @@ void kcUdpBackendThreadWorks(void* obj) {
 			break;
 		plugin = kcServerPluginsFind(backendItem->recv, shared->plugins, str);
 		if (NULL != plugin) {
-			rc = plugin->funProcessData(shared->config, backendItem, plugin->identifierLen, conn, shared->rwlock, str);
+			rc = plugin->funProcessData(shared->config, backendItem, plugin->identifierLen, /*conn,*/ shared->rwlock, str);
 			if (KC_OK != rc)
 				kcSaveLog(shared->config->log_path, str, NULL);
 		}
